@@ -2,10 +2,13 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import RequireAuth from './RequireAuth';
 
+import Aluno from '../pages/Aluno';
+import Alunos from '../pages/Alunos';
+import Fotos from '../pages/Fotos';
+import Register from '../pages/Register';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
-import Exit from '../pages/Exit';
-import Page404 from '../components/Page404';
+import Page404 from '../pages/Page404';
 import Unauthorized from '../components/Unauthorized';
 
 const ROLES = {
@@ -19,13 +22,17 @@ export default function RoutesPages() {
     <Routes>
       {/* public routes */}
       <Route path="/" element={<h1>Página de início</h1>} />
-      <Route path="/Home" element={<Home />} />
-      <Route path="/Login" element={<Login />} />
-      <Route path="/Unauthorized" element={<Unauthorized />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
+      <Route path="/Unauthorized" element={<Unauthorized />} />
       {/* we want to protect these routes */}
       <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
-        <Route path="/Exit" element={<Exit />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/aluno/:id/edit" element={<Aluno />} />
+        <Route path="/aluno/" element={<Aluno />} />
+        <Route path="/fotos/:id" element={<Fotos />} />
+        <Route path="/alunos" element={<Alunos />} />
       </Route>
 
       {/* catch all */}

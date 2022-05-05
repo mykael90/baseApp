@@ -1,46 +1,73 @@
-import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import useAuth from '../../hooks/useAuth';
-import { Title, Paragrafo } from './styled';
-import axios from '../../services/axios';
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
+import { isEmail } from 'validator';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import { Title, Form } from './styled';
+import * as actions from '../../store/modules/auth/actions';
+import Loading from '../../components/Loading';
 
 export default function Login() {
-  React.useEffect(() => {
-    async function getData() {
-      const response = await axios.get('/alunos');
-      const { data } = response;
-      console.log(data);
-    }
-    getData();
-  });
-
-  const { setAuth } = useAuth();
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || '/';
 
-  const handleClick = () => {
-    setAuth({
-      user: 'Mykael',
-      pwd: '1234',
-      roles: [5150],
-      accessToken: 'njfksh123912203',
-    });
-    navigate(from, { replace: true });
+  const location = useLocation();
+  const prevPath = location.state?.from?.pathname || '/';
+
+  const isLoading = useSelector((state) => state.auth.isLoading);
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    let formErrors = false;
+
+    if (!isEmail(email)) {
+      formErrors = true;
+      toast.error('Email inválido');
+    }
+
+    if (password.length < 6 || password.length > 50) {
+      formErrors = true;
+      toast.error('Senha inválida');
+    }
+    if (formErrors) return;
+
+    dispatch(actions.loginRequest({ email, password, prevPath, navigate }));
   };
 
   return (
     <>
-      <Title>
-        Login
-        <small>Oie</small>
-      </Title>
-      <Paragrafo>lorem ipsum dolor sit amet.</Paragrafo>
-      <a href="http://localhost:3000/">OIeee</a>
-      <button type="button" onClick={handleClick}>
-        Clicar!
-      </button>
+      <Loading isLoading={isLoading} />
+      <Title>Login</Title>
+      <Form>
+        <label htmlFor="email">
+          E-mail:
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Seu e-mail"
+          />
+        </label>
+        <label htmlFor="password">
+          Senha:
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Sua senha"
+          />
+        </label>
+
+        <button type="submit" onClick={handleSubmit}>
+          Entrar
+        </button>
+      </Form>
     </>
   );
 }
