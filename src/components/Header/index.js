@@ -31,6 +31,9 @@ export default function Header() {
       <Link to="/Home">
         <FaHome size={24} />
       </Link>
+      <Link to="/Alunos">
+        <FaHome size={24} />
+      </Link>
       <Link to="/Register">
         <FaUserAlt size={24} />
       </Link>

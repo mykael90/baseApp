@@ -25,7 +25,7 @@ export default function RoutesPages() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      <Route path="/Unauthorized" element={<Unauthorized />} />
+      <Route path="/unauthorized" element={<Unauthorized />} />
       {/* we want to protect these routes */}
       <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
         <Route path="/home" element={<Home />} />
